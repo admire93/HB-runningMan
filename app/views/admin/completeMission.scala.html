@@ -7,18 +7,25 @@
     }
     <ol>
     @mission.map { m =>
-      <li>@m.name 미션 
+      <li>
+      @m.name 미션 
       @if(m.status=="progress") {
       <form action="@routes.Admins.complete(teamId, m.id.toString.toLong)" method="POST">
 
       <input type="submit" class="btn btn-success" value="미션완료" name="submit" />
       </form>
-      } </li>
+      } 
+      </li>
     }
     </ol>
   }.getOrElse {
+
+    <ul>
     @Team.findAll.map { team =>
-      <a href="@routes.Admins.completeMission(team.index.toString.toLong)">@team.name 팀 미션 관리</a>
+    <li>
+      <h3><a href="@routes.Admins.completeMission(team.index.toString.toLong)">@team.name 팀 미션 관리</a></h3>
+    </li>
     }
+    </ul>
   } 
 }

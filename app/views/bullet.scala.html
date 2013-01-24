@@ -1,0 +1,6 @@
+@(team: Team)(implicit flash: Flash)
+@main(Some(team)) {
+  <div class="hero-unit">
+  <h1>@team.name 팀 총알 @Mission.getBullet(team.index.toString.toLong) %</h1>
+  <div>
+}

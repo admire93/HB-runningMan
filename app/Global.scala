@@ -10,6 +10,13 @@ import models._
 
 object Global extends GlobalSettings {
 
+  override def onHandlerNotFound(request: RequestHeader): Result = {
+    implicit val flash = request.flash
+    NotFound(
+      views.html.notfound()
+    )
+  }
+
   override def onStart(app: Application) {
     val now = new Date
     if(Mission.findAll.isEmpty) {

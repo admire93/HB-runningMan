@@ -54,6 +54,10 @@ object Teams extends Controller with TeamsSecured {
     )
   }
 
+  def getBullet(teamId: Long) = WithTeam(teamId) { team => implicit request =>
+    Ok(views.html.bullet(team))
+  }
+
   def startMission(teamId: Long, missionId: Long) = WithTeam(teamId) { team => implicit request =>
     Mission.findCurrentByTeamIdAndMissionId(teamId, missionId).map { mission =>
       Mission.start(missionId, teamId)

@@ -3,6 +3,7 @@
 # ~~~~
 
 # Home page
+
 GET     /                           controllers.Application.index
 
 GET     /admin                      controllers.Admins.index
@@ -19,6 +20,7 @@ POST    /admin/team/:teamId/mission.complete/:missionId        controllers.Admin
 GET    /team/login                  controllers.Teams.login
 POST   /team/login                  controllers.Teams.auth
 GET    /team/:id                    controllers.Teams.index(id: Long)
+GET    /team/:id/bullet             controllers.Teams.getBullet(id: Long)
 
 GET    /team/:id/mission            controllers.Teams.currentMission(id: Long)
 GET    /team/:id/next               controllers.Teams.nextMission(id: Long)

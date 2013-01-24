@@ -10,7 +10,7 @@ import anorm._
 import anorm.SqlParser._
 
 case class Mission(id: Pk[Long], name: String, description: String, place: String, createdAt: Date)
-case class MissionWithStatus(id: Pk[Long], name: String, description: String, place: String, createdAt: Date, status: String, modifiedAt: Date)
+case class MissionWithStatus(id: Pk[Long], name: String, description: String, place: String, createdAt: Date, status: String, startedAt: Date, endedAt: Date)
 
 object Mission {
 
@@ -30,8 +30,9 @@ object Mission {
     get[String]("hb_mission.place")~
     get[Date]("hb_mission.created_at")~
     get[String]("hb_progress.prog")~
+    get[Date]("hb_progress.created_at")~
     get[Date]("hb_progress.modified_at") map {
-      case id~n~d~p~ca~st~ma => MissionWithStatus(id, n, d, p, ca, st, ma)
+      case id~n~d~p~ca~st~ca2~ma => MissionWithStatus(id, n, d, p, ca, st, ca2, ma)
     }
   }
 
@@ -71,7 +72,7 @@ object Mission {
     DB.withConnection { implicit con =>
       SQL(
         """
-          SELECT m.*, p.prog, p.modified_at
+          SELECT m.*, p.prog, p.created_at, p.modified_at
           FROM hb_mission m, hb_progress p
           WHERE m.id = p.mission_id
                 AND p.team_id = {teamId}
@@ -89,7 +90,7 @@ object Mission {
     DB.withConnection { implicit con =>
       SQL(
         """
-          SELECT m.*, p.prog, p.modified_at
+          SELECT m.*, p.prog, p.created_at, p.modified_at
           FROM hb_mission m, hb_progress p
           WHERE m.id = p.mission_id
                 AND p.team_id = {teamId}
@@ -110,7 +111,7 @@ object Mission {
     DB.withConnection { implicit con =>
       SQL(
         """
-          SELECT m.*, p.prog, p.modified_at
+          SELECT m.*, p.prog, p.created_at, p.modified_at
           FROM hb_mission m, hb_progress p
           WHERE m.id = p.mission_id
                 AND p.team_id = {teamId}
@@ -129,11 +130,37 @@ object Mission {
     } 
   }
 
+  def findAllCompleteByTeamId(teamId: Long): List[MissionWithStatus] ={
+    DB.withConnection { implicit con =>
+      SQL(
+        """
+          SELECT m.*, p.prog, p.created_at, p.modified_at
+          FROM hb_mission m, hb_progress p
+          WHERE m.id = p.mission_id
+                AND p.team_id = {teamId}
+                AND p.prog = 'complete'
+        """
+      ).on(
+        'teamId -> teamId
+      ).as(
+        missionStatusParser.*
+      )
+    }
+  }
+
+  def getBullet(teamId: Long): Double = {
+    var bullet: Double = 0.0
+    findAllCompleteByTeamId(teamId).map { mission =>
+      bullet += ((10 - ((mission.endedAt.getTime - mission.startedAt.getTime) / 60000.0)) / 10.0) * 100
+    }
+    bullet
+  }
+
   def findNextByTeamId(teamId: Long): Option[MissionWithStatus] = {
     DB.withConnection { implicit con =>
       SQL(
         """
-          SELECT m.*, p.prog, p.modified_at
+          SELECT m.*, p.prog, p.created_at, p.modified_at
           FROM hb_mission m, hb_progress p
           WHERE m.id = p.mission_id
                 AND p.team_id = {teamId}
