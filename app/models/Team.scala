@@ -34,6 +34,36 @@ object Team {
     }
   }
 
+  def findOneByIndex(id: Long): Option[Team] = {
+    DB.withConnection { implicit con =>
+      SQL(
+        """
+          SELECT * 
+          FROM hb_team
+          WHERE id = {index}
+        """
+      ).on(
+        'index -> id
+      ).as(teamParser.singleOpt)
+    }
+  }
+
+  def auth(id: String, pw: String): Option[Team] = {
+    DB.withConnection { implicit con =>
+      SQL(
+        """
+          SELECT * 
+          FROM hb_team
+          WHERE identity = {identity}
+                AND password = {pw}
+        """
+      ).on(
+        'identity -> id,
+        'pw -> pw
+      ).as(teamParser.singleOpt)
+    }
+  }
+
   def add(t: Team): Option[Long] = {
     DB.withConnection { implicit con =>
       SQL(
