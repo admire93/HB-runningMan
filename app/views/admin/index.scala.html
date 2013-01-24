@@ -1,5 +1,20 @@
 @()(implicit flash: Flash)
 
+@import models._
+
 @admin.main {
   <h1> 런닝맨 실시간 상황 </h1> 
+  <ul class="unstyled">
+  @Team.findAll.map { team =>
+
+    <li>
+      <div>
+        <h3>@team.name 팀</h3>
+        <p>
+          @team.createdAt 에 등록됨.
+        </p>
+      </div>
+    </li>
+  }
+  </ul>
 }

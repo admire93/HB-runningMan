@@ -1,11 +1,16 @@
 package controllers
 
+import java.util.Date
+
 import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 
+import models._
+
 case class AdminLogin(id: String, pw: String)
+case class TeamLogin(id: String, pw: String, name: String)
 
 object Admins extends Controller with Secured {
 
@@ -15,6 +20,13 @@ object Admins extends Controller with Secured {
       "pw" -> nonEmptyText
     )(AdminLogin.apply)(AdminLogin.unapply)
   )
+  val addTeamForm = Form(
+    mapping(
+      "id" -> nonEmptyText,
+      "pw" -> nonEmptyText,
+      "name" -> nonEmptyText
+    )(TeamLogin.apply)(TeamLogin.unapply)
+  )
   def index = WithAdmin { implicit request =>
     Ok(views.html.admin.index())
   }
@@ -23,7 +35,26 @@ object Admins extends Controller with Secured {
     Redirect(routes.Admins.login).withNewSession
   }
 
-  def addTeam = TODO
+  def addTeam = WithAdmin { implicit request =>
+    Ok(views.html.admin.addTeam())
+  }
+
+  def saveTeam = WithAdmin { implicit request =>
+    addTeamForm.bindFromRequest.fold(
+      error => Ok(views.html.admin.addTeam()),
+      d => {
+        Team.add(Team(anorm.NotAssigned, d.id, d.pw, d.name, new Date)).map { _ =>
+          Redirect(routes.Admins.addTeam).flashing(
+            "success" -> "%s 팀 등록에 성공했습니다. 학생들은 로그인하고 게임을 시작해주세요!".format(d.name)
+          ) 
+        }.getOrElse {
+          Redirect(routes.Admins.addTeam).flashing(
+            "fail" -> "%s 팀 등록에 실패했습니다. 다시 한번 가입해주세요.".format(d.name)
+          ) 
+        }
+      }
+    )
+  }
 
   def login = Action { implicit request =>
     Ok(views.html.admin.login(loginForm))

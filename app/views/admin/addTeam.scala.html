@@ -1,0 +1,13 @@
+@()(implicit flash: Flash)
+
+@admin.main {
+  <h1> 팀등록하기 </h1>
+  <form action="@routes.Admins.saveTeam" method="POST">
+    <fieldset>
+      <input type="text" name="name" placeholder="팀이름" class="fat-input" /> <br />
+      <input type="text" name="id" placeholder="팀아이디" class="fat-input" /> <br />
+      <input type="password" name="pw" placeholder="비밀번호" class="fat-input" /> <br />
+      <input type="submit" class="btn btn-primary btn-large" value="로그인" />
+    </fieldset>
+  </form>
+}
