@@ -1,5 +1,5 @@
 @(team: Team)(implicit flash: Flash)
-@main {
+@main(Some(team)) {
   
 <div class="hero-unit">
   <h1>Hello! @team.name 팀</h1>

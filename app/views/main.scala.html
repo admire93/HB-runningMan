@@ -1,4 +1,4 @@
-@(content: Html)(implicit flash: Flash)
+@(team: Option[Team])(content: Html)(implicit flash: Flash)
 
 <!DOCTYPE html>
 
@@ -22,10 +22,12 @@
     <body>
       <div class="navbar navbar-static-top" style="margin-bottom: 50px;">
         <div class="navbar-inner">
-          <a class="brand" href="#">HB RunningMan</a>
+          <a class="brand" href="@routes.Teams.login">HB RunningMan</a>
           <ul class="nav">
-            <li><a href="">현재 미션</a></li>
-            <li><a href="">다음 미션</a></li>
+            @team.map { team =>
+            <li><a href="@routes.Teams.currentMission(team.index.toString.toLong)">현재 미션</a></li>
+            <li><a href="@routes.Teams.nextMission(team.index.toString.toLong)">다음 미션</a></li>
+            }
           </ul>
         </div>
       </div>

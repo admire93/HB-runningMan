@@ -1,0 +1,24 @@
+@(team: Team, mission: MissionWithStatus)(implicit flash: Flash)
+@main(Some(team) ) {
+  <div class="hero-unit">
+  <h1>@mission.name</h1>
+  <p>
+  @mission.description
+  </p>
+
+
+  <p>
+    @if(mission.status == "current") {
+      <h3> 장소 @mission.place </h3>
+      <a href="@routes.Teams.startMission(team.index.toString.toLong, mission.id.toString.toLong)" class="btn btn-success btn-large">
+      시작하기
+      </a>
+   } 
+   @if(mission.status =="progress") {
+        <button class="btn btn-primary disabled">
+        진행중
+        </button>
+    }
+  </p>
+</div> 
+}

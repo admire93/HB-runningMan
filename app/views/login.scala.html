@@ -1,5 +1,5 @@
 @(form: Form[TeamLogin])(implicit flash: Flash)
-@main{
+@main(None){
   <h1>팀 로그인 페이지</h1>
   <form action="@routes.Teams.auth" method="POST">
     <fieldset>

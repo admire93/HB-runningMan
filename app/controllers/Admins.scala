@@ -39,6 +39,21 @@ object Admins extends Controller with Secured {
     Ok(views.html.admin.addTeam())
   }
 
+  def manageMission = WithAdmin { implicit request =>
+    Ok(views.html.admin.completeMission(None, List[MissionWithStatus]()))
+  }
+
+  def completeMission(teamId: Long) = WithAdmin { implicit request =>
+    Ok(views.html.admin.completeMission(Some(teamId), Mission.findAllWithStatusByTeamId(teamId)))
+  }
+
+  def complete(teamId: Long, missionId: Long) = WithAdmin { implicit request => 
+    Mission.complete(teamId, missionId)
+    Redirect(routes.Admins.completeMission(teamId)).flashing(
+      "success" -> "미션완료가 되었습니다. 다음미션을 수행하도록 도와주세요. "
+    )
+  }
+
   def saveTeam = WithAdmin { implicit request =>
     addTeamForm.bindFromRequest.fold(
       error => Ok(views.html.admin.addTeam()),

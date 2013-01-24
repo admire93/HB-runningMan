@@ -85,6 +85,131 @@ object Mission {
     } 
   }
 
+  def findCurrentByTeamIdAndMissionId(teamId: Long, missionId: Long): Option[MissionWithStatus] = {
+    DB.withConnection { implicit con =>
+      SQL(
+        """
+          SELECT m.*, p.prog, p.modified_at
+          FROM hb_mission m, hb_progress p
+          WHERE m.id = p.mission_id
+                AND p.team_id = {teamId}
+                AND p.mission_id = {missionId}
+                AND p.prog = 'current'
+          LIMIT 1
+        """
+      ).on(
+        'teamId -> teamId,
+        'missionId -> missionId
+      ).as(
+        missionStatusParser.singleOpt
+      )
+    } 
+  }
+
+  def findCurrentByTeamId(teamId: Long): Option[MissionWithStatus] = {
+    DB.withConnection { implicit con =>
+      SQL(
+        """
+          SELECT m.*, p.prog, p.modified_at
+          FROM hb_mission m, hb_progress p
+          WHERE m.id = p.mission_id
+                AND p.team_id = {teamId}
+                AND (
+                  p.prog = 'current'
+                  OR
+                  p.prog = 'progress'
+                )
+          LIMIT 1
+        """
+      ).on(
+        'teamId -> teamId
+      ).as(
+        missionStatusParser.singleOpt
+      )
+    } 
+  }
+
+  def findNextByTeamId(teamId: Long): Option[MissionWithStatus] = {
+    DB.withConnection { implicit con =>
+      SQL(
+        """
+          SELECT m.*, p.prog, p.modified_at
+          FROM hb_mission m, hb_progress p
+          WHERE m.id = p.mission_id
+                AND p.team_id = {teamId}
+                AND p.prog = 'next'
+          LIMIT 1
+        """
+      ).on(
+        'teamId -> teamId
+      ).as(
+        missionStatusParser.singleOpt
+      )
+    } 
+  }
+
+  def complete(teamId: Long, missionId: Long) = {
+    val now = new Date
+    DB.withConnection { implicit con =>
+      SQL(
+        """
+          UPDATE hb_progress
+          SET modified_at = {now}, prog = 'complete'
+          WHERE mission_id = {missionId}
+                AND team_id = {teamId}
+        """
+      ).on(
+        'now -> now,
+        'missionId -> missionId,
+        'teamId -> teamId
+      ).executeUpdate()
+
+      SQL(
+        """
+          UPDATE hb_progress
+          SET prog = 'current'
+          WHERE mission_id = {nextMissionId}
+                AND team_id = {teamId}
+        """
+      ).on(
+        'now -> now,
+        'nextMissionId -> (missionId + 1),
+        'teamId -> teamId
+      ).executeUpdate()
+
+      SQL(
+        """
+          UPDATE hb_progress
+          SET prog = 'next'
+          WHERE mission_id = {missionId}
+                AND team_id = {teamId}
+        """
+      ).on(
+        'now -> now,
+        'missionId -> (missionId + 2),
+        'teamId -> teamId
+      ).executeUpdate()
+    }
+  }
+
+  def start(missionId: Long, teamId: Long) = {
+    DB.withConnection { implicit con =>
+      val now = new Date
+      SQL(
+        """
+          UPDATE hb_progress
+          SET created_at = {now}, prog = 'progress'
+          WHERE mission_id = {missionId}
+                AND team_id = {teamId}
+        """
+      ).on(
+        'now -> now,
+        'missionId -> missionId,
+        'teamId -> teamId
+      ).executeUpdate()
+    }
+  }
+
   def initMissionProgress(teamId: Long) = {
     DB.withConnection { implicit con =>
       var now =   new Date

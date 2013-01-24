@@ -54,12 +54,31 @@ object Teams extends Controller with TeamsSecured {
     )
   }
 
+  def startMission(teamId: Long, missionId: Long) = WithTeam(teamId) { team => implicit request =>
+    Mission.findCurrentByTeamIdAndMissionId(teamId, missionId).map { mission =>
+      Mission.start(missionId, teamId)
+      Redirect(routes.Teams.currentMission(teamId)).flashing(
+        "success" -> "미션 시작!!!"
+      )
+    }.getOrElse {
+      Ok(views.html.error()) 
+    }
+  }
+
   def currentMission(id: Long) = WithTeam(id) { team => implicit request => 
-    Ok("abc")
+    Mission.findCurrentByTeamId(id).map { mission =>
+      Ok(views.html.missionCard(team, mission))
+    }.getOrElse {
+      Ok(views.html.allcomplete())
+    }
   }
 
   def nextMission(id: Long) = WithTeam(id) { team => implicit request => 
-    Ok("abc")
+    Mission.findNextByTeamId(id).map { mission =>
+      Ok(views.html.missionCard(team, mission))
+    }.getOrElse {
+      Ok("All mission accomplished")
+    }
   }
 }
 
