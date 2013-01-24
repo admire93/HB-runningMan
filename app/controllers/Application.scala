@@ -9,4 +9,8 @@ object Application extends Controller {
   def index = Action { implicit request =>
     Ok(views.html.index())
   }
+
+  def logout = Action { implicit request =>
+    Redirect(routes.Application.index).withNewSession
+  }
 }

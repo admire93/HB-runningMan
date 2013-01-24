@@ -31,10 +31,6 @@ object Admins extends Controller with Secured {
     Ok(views.html.admin.index())
   }
 
-  def logout = Action { implicit request =>
-    Redirect(routes.Admins.login).withNewSession
-  }
-
   def addTeam = WithAdmin { implicit request =>
     Ok(views.html.admin.addTeam())
   }

@@ -15,6 +15,20 @@
       <input type="submit" class="btn btn-success" value="미션완료" name="submit" />
       </form>
       } 
+      @if(m.status == "complete") {
+        @{
+          val a = 10 - ((m.endedAt.getTime - m.startedAt.getTime) / 60000.0)
+          var b = 0.0
+          if(a > 7) {
+            b = 2.0
+          } else if(a > 5) {
+            b = 1.0
+          } else if(a > 3) {
+            b = 0.5
+          }
+          b
+        } 개 힌트 획득
+      }
       </li>
     }
     </ol>
