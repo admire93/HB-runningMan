@@ -1,0 +1,12 @@
+@(form: Form[AdminLogin])(implicit flash: Flash)
+
+@admin.main{
+  <h1>교사 로그인 페이지</h1>
+  <form action="@routes.Admins.auth" method="POST">
+    <fieldset>
+      <input type="text" name="id" placeholder="아이디" class="fat-input" /> <br />
+      <input type="password" name="pw" placeholder="비밀번호" class="fat-input" /> <br />
+      <input type="submit" class="btn btn-primary btn-large" value="로그인" />
+    </fieldset>
+  </form>
+}
