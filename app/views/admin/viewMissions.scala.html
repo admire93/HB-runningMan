@@ -1,0 +1,12 @@
+@()(implicit flash: Flash)
+
+@admin.main {
+  <h1> 미션들 </h1>
+  <ol>
+    @Mission.findAll.map { mission =>
+      <li>
+        <h2>@mission.name</h2>
+      </li>
+    } 
+  </ol>
+}

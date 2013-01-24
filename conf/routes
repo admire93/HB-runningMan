@@ -10,6 +10,7 @@ GET     /admin/login                controllers.Admins.login
 POST    /admin/login                controllers.Admins.auth
 GET     /admin/addTeam              controllers.Admins.addTeam
 POST    /admin/addTeam              controllers.Admins.saveTeam
+GET     /admin/mission              controllers.Admins.viewMissions
  
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

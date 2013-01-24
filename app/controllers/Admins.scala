@@ -56,6 +56,10 @@ object Admins extends Controller with Secured {
     )
   }
 
+  def viewMissions = WithAdmin { implicit request =>
+    Ok(views.html.admin.viewMissions())
+  }
+
   def login = Action { implicit request =>
     Ok(views.html.admin.login(loginForm))
   }   
@@ -78,8 +82,6 @@ object Admins extends Controller with Secured {
   }
 
 }
-
-
 
 trait Secured {
   def WithAdmin(f: Request[AnyContent] => Result) = Action { implicit request =>
