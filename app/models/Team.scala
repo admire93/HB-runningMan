@@ -21,6 +21,7 @@ object Team {
       case id~iden~pw~n~ca => Team(id, iden, pw, n, ca)
     }
   }
+
   def findAll: List[Team] = {
     DB.withConnection { implicit con =>
       SQL(

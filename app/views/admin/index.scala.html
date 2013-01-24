@@ -12,6 +12,30 @@
         <p>
           @team.createdAt 에 등록됨.
         </p>
+
+        <h4>미션 진행상황</h4>
+        <ul>
+        @Mission.findAllWithStatusByTeamId(team.index.toString.toLong).map { mission =>
+          <li>
+            <dl>
+              <dt>@mission.name</dt>
+              <dd>
+            @if(mission.status == "stay"  || mission.status == "next") {
+            대기중
+            } 
+            @if(mission.status == "current") {
+            진행중
+            } 
+            @if(mission.status == "complete") {
+            왼료됨 
+            }
+              </dd>
+            </dl>
+
+          </li>
+        }
+        </ul>
+
       </div>
     </li>
   }

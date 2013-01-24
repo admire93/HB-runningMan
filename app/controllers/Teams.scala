@@ -53,6 +53,14 @@ object Teams extends Controller with TeamsSecured {
       }
     )
   }
+
+  def currentMission(id: Long) = WithTeam(id) { team => implicit request => 
+    Ok("abc")
+  }
+
+  def nextMission(id: Long) = WithTeam(id) { team => implicit request => 
+    Ok("abc")
+  }
 }
 
 trait TeamsSecured {

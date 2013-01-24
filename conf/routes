@@ -16,6 +16,9 @@ GET     /admin/mission              controllers.Admins.viewMissions
 GET    /team/login                  controllers.Teams.login
 POST   /team/login                  controllers.Teams.auth
 GET    /team/:id                    controllers.Teams.index(id: Long)
+
+GET    /team/:id/mission            controllers.Teams.currentMission(id: Long)
+GET    /team/:id/next               controllers.Teams.nextMission(id: Long)
  
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

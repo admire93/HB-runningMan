@@ -48,7 +48,8 @@ object Admins extends Controller with Secured {
             "fail" -> "%s 팀 등록에 실패했습니다. 중복된 아이디와 비밀번호입니다.".format(d.name)
           ) 
         } else {
-          Team.add(Team(anorm.NotAssigned, d.id, d.pw, d.name, new Date)).map { _ =>
+          Team.add(Team(anorm.NotAssigned, d.id, d.pw, d.name, new Date)).map { team =>
+            Mission.initMissionProgress(team)
             Redirect(routes.Admins.addTeam).flashing(
               "success" -> "%s 팀 등록에 성공했습니다. 학생들은 로그인하고 게임을 시작해주세요!".format(d.name)
             ) 
