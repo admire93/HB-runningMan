@@ -16,6 +16,8 @@ GET     /admin/mission              controllers.Admins.viewMissions
 GET     /admin/manageMission        controllers.Admins.manageMission
 GET     /admin/team/:teamId/mission.panel        controllers.Admins.completeMission(teamId: Long)
 POST    /admin/team/:teamId/mission.complete/:missionId        controllers.Admins.complete(teamId: Long, missionId: Long)
+GET     /admin/bibleQuestion        controllers.Admins.questions
+GET     /admin/actionQuestion        controllers.Admins.actionQuestions
 
 
 GET    /team/login                  controllers.Teams.login

@@ -105,6 +105,15 @@ object Admins extends Controller with Secured {
     )
   }
 
+  def actionQuestions = WithAdmin { implicit request =>
+    Ok(views.html.admin.question("action", 5)) 
+  }
+
+  def questions = WithAdmin { implicit request =>
+
+    Ok(views.html.admin.question("bible", 7))
+  }
+
 }
 
 trait Secured {

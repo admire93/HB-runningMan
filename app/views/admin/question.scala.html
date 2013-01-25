@@ -1,0 +1,16 @@
+@(kind: String, limit: Long)(implicit flash: Flash)
+
+@import models.Question
+
+@admin.main{
+<ul>
+  @Question.findRandom(kind, limit).map { q =>
+    <li> 
+      <h2>@q.question</h2>
+      <p>
+        @q.answer
+      </p>
+    </li>
+  }
+</ul>
+}
