@@ -9,8 +9,8 @@
     <li>
       <div>
         <h3>@team.name 팀</h3>
-        <p>
-          @team.createdAt 에 등록됨.
+        <p> 
+          <span class="teamCreatedAt@team.createdAt.getTime"></span>에 등록됨.
         </p>
         <p>
          총알 @Mission.getBullet(team.index.toString.toLong) %
@@ -27,20 +27,34 @@
             대기중
             } 
             @if(mission.status == "current") {
-            진행중
+              현재 미션, 대기상태
+            }
+            @if(mission.status == "progress") {
+            진행중, <span class="missionStartedAt@mission.startedAt.getTime"></span>
             } 
             @if(mission.status == "complete") {
-            왼료됨 
+            왼료됨, <span class="missionEndedAt@mission.endedAt.getTime"></span>
             }
               </dd>
             </dl>
 
+      <script type="text/javascript">
+        var startTime = new Date(@mission.startedAt.getTime)
+        var endedTime = new Date(@mission.endedAt.getTime)
+        $(".missionStartedAt@mission.startedAt.getTime").html(awesomeDate.time(startTime))
+        $(".missionEndedAt@mission.endedAt.getTime").html(awesomeDate.time(endedTime))
+      </script>
           </li>
         }
         </ul>
 
       </div>
+      <script type="text/javascript">
+        var time = new Date(@team.createdAt.getTime)
+        $(".teamCreatedAt@team.createdAt.getTime").html(awesomeDate.time(time))
+      </script>
     </li>
+    
   }
   </ul>
 }
